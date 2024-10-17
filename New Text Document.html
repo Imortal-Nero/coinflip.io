@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Flip Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .coin-video {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Coin Flip Betting Game</h1>
+    <div class="container">
+        <p>Current Balance: <span id="currency">5000</span></p>
+
+        <label for="amount">Enter Amount to Bet:</label>
+        <input type="text" id="amount" placeholder="Enter amount">
+
+        <label for="side">Pick a Side (H/T):</label>
+        <select id="side">
+            <option value="H">Heads (H)</option>
+            <option value="T">Tails (T)</option>
+        </select>
+
+        <button onclick="playGame()">Flip the Coin</button>
+
+        <div class="result" id="result"></div>
+
+        <!-- Coin Flip Video with Audio -->
+        <video id="coinVideo" class="coin-video" width="200" autoplay>
+            <source src="WhatsApp Video 2024-10-11 at 01.23.58_3a6071df.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        let currency = 5000;
+
+        function playGame() {
+            let amount = parseInt(document.getElementById('amount').value);
+            let win = document.getElementById('side').value;
+            let resultText = document.getElementById('result');
+            let coinVideo = document.getElementById('coinVideo');
+
+            // Clear result text
+            resultText.innerHTML = "";
+
+            if (isNaN(amount) || amount <= 0) {
+                resultText.innerHTML = "Please enter a valid amount.";
+                return;
+            }
+
+            if (amount > currency) {
+                resultText.innerHTML = "You have entered an amount exceeding your balance. Try Again!";
+                return;
+            }
+
+            // Show coin flip video and start it with audio
+            coinVideo.style.display = 'block';
+            coinVideo.play();
+
+            // Simulate the coin flip with a delay for the video
+            setTimeout(() => {
+                let coin = Math.floor(Math.random() * 2);  // 0 for heads, 1 for tails
+                let side = win === 'H' ? 0 : 1;  // H corresponds to 0, T corresponds to 1
+
+                // Hide the coin flip video after it ends
+                coinVideo.style.display = 'none';
+
+                if (coin === side) {
+                    resultText.innerHTML = `You betted on ${win} and won!`;
+                    currency += amount;
+                } else {
+                    resultText.innerHTML = `You betted on ${win} and lost.`;
+                    currency -= amount;
+                }
+
+                document.getElementById('currency').innerText = currency;
+
+                if (currency <= 0) {
+                    resultText.innerHTML += "<br>You have no money left. Please recharge your account!";
+                }
+
+            }, 2000);  // Set a delay of 2 seconds to simulate the coin flip
+        }
+    </script>
+
+</body>
+</html>
